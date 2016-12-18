@@ -1,0 +1,51 @@
+import * as winston from 'winston';
+
+const config = {
+  "firebase": {
+    "apiKey": "<your-api-key>"
+    "authDomain": "<your-auth-domain>"
+    "databaseURL": "<your-database-url>"
+    "storageBucket": "<your-storage-bucket>"
+    "messagingSenderId": "<your-sender-id>"
+  },
+  "winston": {
+    "access": new winston.Logger({
+      transports: [
+        new (require('winston-daily-rotate-file'))({
+          filename: './logs/log',
+          datePattern: 'yyyy-MM-dd-access.',
+          prepend: true,
+          prettyPrint: true,
+          json: true,
+          level: process.env.ENV === 'development' ? 'debug' : 'info',
+          handleExceptions: true,
+          maxsize: 5242880,
+          maxFiles: 5,
+        })
+      ],
+      exitOnError: false
+    }),
+    "app": {
+      transports: [
+        new (winston.transports.Console)({
+          timestamp: true,
+          level: 'verbose',
+          colorize: true,
+          prettyPrint: true,
+          humanReadableUnhandledException: true
+        }),
+        new (require('winston-daily-rotate-file'))({
+          filename: './logs/log',
+          datePattern: 'yyyy-MM-dd-app.',
+          prepend: true,
+          prettyPrint: true,
+          json: true,
+          level: process.env.ENV === 'development' ? 'debug' : 'info'
+        })
+      ],
+      exitOnError: false
+    }
+  }
+};
+
+module.exports = config;

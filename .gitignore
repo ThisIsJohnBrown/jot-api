@@ -3,3 +3,5 @@ logs
 config.ts
 dist
 .DS_Store
+npm-debug.log
+generator

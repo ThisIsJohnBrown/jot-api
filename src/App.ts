@@ -4,6 +4,10 @@ import * as bodyParser from 'body-parser';
 import * as firebase from 'firebase';
 import * as fs from 'fs';
 import * as winston from 'winston';
+
+import Jot from './Jot';
+import {Sensor, TemperatureSensor} from './Sensor';
+
 const config = require('../config');
 
 var logger = config.winston.access;
@@ -14,9 +18,8 @@ var logger = config.winston.access;
     }
 };
 
-import HeroRouter from './routes/HeroRouter';
+import JotRouter from './routes/JotRouter';
 
-// Creates and configures an ExpressJS web server.
 class App {
 
   // ref to Express instance
@@ -30,6 +33,8 @@ class App {
     this.express = express();
     this.middleware();
     this.routes();
+
+    let jot:Jot = new Jot('elkhead', ['temperature', 'noise']);
   }
 
   // Configure Express middleware.
@@ -41,8 +46,8 @@ class App {
 
   // Configure API endpoints.
   private routes(): void {
-    HeroRouter.setFirebase(this.firebase);
-    this.express.use('/api/v1/heroes', HeroRouter.router);
+    JotRouter.setFirebase(this.firebase);
+    this.express.use('/api/v1', JotRouter.router);
   }
 
 }
